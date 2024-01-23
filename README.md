@@ -27,3 +27,6 @@ func (cm *CreateMenu) Create(createMenuRequest CreateMenuRequest, createMenuPres
 }
 ````
 
+https://go-proverbs.github.io/ things to follow
+https://go.dev/doc/effective_go
+https://google.github.io/styleguide/go/ 
