@@ -1,4 +1,4 @@
-Simple go example that not using the standard golang community folder convention.
+Simple go example not using the standard golang community folder convention.
 ```
 [application]<---[infrastructure]--->[domain]
 |                                         ^
