@@ -15,10 +15,10 @@ type CreateMenuErrorPresenter struct {
 	request *http.Request
 }
 
-func NewCreateMenuErrorPresenter(write http.ResponseWriter, r *http.Request) *CreateMenuErrorPresenter {
+func NewCreateMenuErrorPresenter(write http.ResponseWriter, request *http.Request) *CreateMenuErrorPresenter {
 	return &CreateMenuErrorPresenter{
-		write:   write,
-		request: r,
+		write,
+		request,
 	}
 }
 
@@ -26,6 +26,7 @@ func (cmep *CreateMenuErrorPresenter) Present(response create_menu.CreateMenuRes
 	type menuErrorResponseDto struct {
 		Error string `json:"error"`
 	}
+
 	cmep.write.Header().Set("Content-Type", "application/json")
 	cmep.write.WriteHeader(http.StatusBadRequest)
 
@@ -43,9 +44,5 @@ func NewCreateMenuPresenter(write http.ResponseWriter) *CreateMenuPresenter {
 
 func (cmp *CreateMenuPresenter) Present(response create_menu.CreateMenuResponse) {
 	cmp.write.Header().Set("Content-Type", "application/json")
-
-	err := json.NewEncoder(cmp.write).Encode(response)
-	if err != nil {
-		return
-	}
+	_ = json.NewEncoder(cmp.write).Encode(response)
 }
