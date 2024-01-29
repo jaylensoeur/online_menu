@@ -11,5 +11,5 @@ func NewCafeId(uuid Uuid) *CafeId {
 }
 
 func (c *CafeId) GetValue() string {
-	return c.uuid.GetId()
+	return c.uuid.GetValue()
 }

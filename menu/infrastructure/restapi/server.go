@@ -1,26 +1,30 @@
 package restapi
 
 import (
-	"fmt"
-	"menu/application/create_menu"
-	"menu/infrastructure/mongo"
+	"github.com/gofiber/fiber/v2"
+	"menu/domain/usecase"
+	"menu/infrastructure/repository/inmemory"
 	"menu/infrastructure/restapi/menu"
-	"net/http"
 )
 
-func Run(port string) {
+func Run() {
 
-	menuController := menu.NewMenuController(
-		create_menu.NewCreateMenu(
-			mongo.NewMenuMongoRepository(),
-		),
+	inMemoryRepository := inmemory.NewInMemoryRepository()
+
+	controller := menu.NewMenuController(
+		usecase.NewCreateMenu(inMemoryRepository),
+		usecase.NewGetMenu(inMemoryRepository),
+		usecase.NewListMenu(inMemoryRepository),
 	)
 
-	http.HandleFunc("/add", menuController.Add([]string{"post"}))
+	app := fiber.New()
+	app.Post("menus", controller.Add())
+	app.Get("menus/:id", controller.Get())
+	app.Get("menus", controller.List())
 
-	err := http.ListenAndServe(":"+port, nil)
+	err := app.Listen(":8080")
+
 	if err != nil {
-		fmt.Printf("error %v", err)
 		return
 	}
 }

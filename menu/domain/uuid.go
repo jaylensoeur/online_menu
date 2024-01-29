@@ -1,6 +1,8 @@
 package domain
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type Uuid struct {
 	id string
@@ -12,6 +14,16 @@ func NewUuid() Uuid {
 	}
 }
 
-func (u *Uuid) GetId() string {
+func NewUuidWithUuid(id string) Uuid {
+	defer func() {
+		recover()
+	}()
+
+	uuidParsed := uuid.MustParse(id)
+	return Uuid{uuidParsed.String()}
+
+}
+
+func (u *Uuid) GetValue() string {
 	return u.id
 }
