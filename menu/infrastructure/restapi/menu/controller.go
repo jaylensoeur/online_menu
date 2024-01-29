@@ -1,10 +1,12 @@
 package menu
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"strconv"
+
 	"menu/domain"
 	"menu/domain/usecase"
-	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type Controller struct {

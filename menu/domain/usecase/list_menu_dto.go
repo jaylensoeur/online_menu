@@ -5,18 +5,20 @@ type ListMenuRequest struct {
 }
 
 type MetaData struct {
-	Page  int    `json:"page"`
-	Sort  string `json:"sort"`
-	Limit int    `json:"limit"`
+	Page      int    `json:"page"`
+	Sort      string `json:"sort"`
+	Limit     int    `json:"limit"`
+	Count     int    `json:"count"`
+	PageTotal int    `json:"pageTotal"`
 }
 
-type Menu struct {
+type MenuDto struct {
 	Title string `json:"title,omitempty"`
 	Uuid  string `json:"uuid,omitempty"`
 }
 
 type ListMenuResponseDto struct {
-	MetaData MetaData `json:"metaData"`
-	Data     []Menu   `json:"data"`
-	Error    string   `json:"error,omitempty"`
+	MetaData MetaData  `json:"metaData"`
+	Data     []MenuDto `json:"data"`
+	Error    string    `json:"error,omitempty"`
 }

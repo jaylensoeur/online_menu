@@ -14,26 +14,30 @@ func NewListMenu(menuRepository domain.MenuRepository) *ListMenu {
 	}
 }
 
-func (cm *ListMenu) ListAllMenu(listMenuRequest ListMenuRequest, presenter domain.Presenter[ListMenuResponseDto]) {
-	menus := cm.menuRepository.FindAllBy(listMenuRequest.Page, listMenuRequest.Limit, listMenuRequest.Sort)
-
-	//mapper domain entity to dto
-	var menuDtos []Menu
+func menuEntityToMenuDtoMapper(menus []*domain.Menu) []MenuDto {
+	//TODO: mapper domain entity to dto
+	var menuDtos []MenuDto = nil
 	for _, menu := range menus {
-		menuDtos = append(menuDtos, Menu{
+		menuDtos = append(menuDtos, MenuDto{
 			Uuid:  menu.GetCafeId().GetValue(),
 			Title: menu.GetTitle().GetValue(),
 		})
 	}
+	return menuDtos
+}
 
+func (cm *ListMenu) ListAllMenu(listMenuRequest ListMenuRequest, presenter domain.Presenter[ListMenuResponseDto]) {
+	menus, metaData := cm.menuRepository.FindAllBy(listMenuRequest.Page, listMenuRequest.Limit, listMenuRequest.Sort)
 	presenter.Present(
 		ListMenuResponseDto{
 			MetaData: MetaData{
-				listMenuRequest.Page,
-				listMenuRequest.Sort,
-				listMenuRequest.Limit,
+				PageTotal: metaData.PageTotal,
+				Sort:      metaData.Sort,
+				Limit:     metaData.Limit,
+				Count:     metaData.Count,
+				Page:      metaData.Page,
 			},
-			Data: menuDtos,
+			Data: menuEntityToMenuDtoMapper(menus),
 		},
 	)
 }
