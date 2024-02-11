@@ -2,28 +2,37 @@ package restapi
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"menu/domain/usecase"
-	"menu/infrastructure"
-	"menu/infrastructure/repository/inmemory"
-	"menu/infrastructure/restapi/menu"
+	"github.com/joho/godotenv"
+	"menu/domain/create"
+	"menu/domain/list"
+	"menu/domain/single"
+	"menu/infrastructure/repository/mongo"
+	"os"
 )
 
 func Run() {
 
-	inMemoryRepository := inmemory.NewInMemoryRepository(infrastructure.LoadJsonData("/infrastructure/repository/inmemory/MOCK_DATA.json"))
+	err := godotenv.Load(".env")
+	if err != nil {
+		return
+	}
+	mongoDao := mongo.NewMongoDao(os.Getenv("MONGODB_URI"))
+	mongoDao.Connect()
 
-	controller := menu.NewMenuController(
-		usecase.NewCreateMenu(inMemoryRepository),
-		usecase.NewGetMenu(inMemoryRepository),
-		usecase.NewListMenu(inMemoryRepository),
+	defer mongoDao.Disconnect()
+	repository := mongo.NewMenuMongoRepository(mongoDao)
+
+	controller := NewMenuController(
+		create.NewCreateMenu(repository),
+		single.NewGetMenu(repository),
+		list.NewListMenu(repository),
 	)
-
 	app := fiber.New()
 	app.Post("menus", controller.Add())
 	app.Get("menus", controller.List())
 	app.Get("menus/:id", controller.Get())
 
-	err := app.Listen(":8080")
+	err = app.Listen(":8080")
 
 	if err != nil {
 		return

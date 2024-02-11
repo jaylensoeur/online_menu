@@ -1,4 +1,4 @@
-package menu
+package restapi
 
 import (
 	"github.com/gofiber/fiber/v2"

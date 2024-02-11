@@ -1,4 +1,4 @@
-package usecase
+package list
 
 type ListMenuRequest struct {
 	MetaData

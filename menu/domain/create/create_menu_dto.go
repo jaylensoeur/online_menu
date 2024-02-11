@@ -1,4 +1,4 @@
-package usecase
+package create
 
 type CreateMenuRequestDto struct {
 	Title string `json:"title"`

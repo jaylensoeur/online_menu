@@ -77,7 +77,6 @@ func (im *InMemoryMenuRepository) FindAllBy(page int, limit int, order string) (
 		if n := cmp.Compare(a.GetTitle().GetValue(), b.GetTitle().GetValue()); n != 0 {
 			return n
 		}
-
 		return 0
 	})
 

@@ -1,24 +1,25 @@
-package menu
+package restapi
 
 import (
+	"menu/domain/create"
+	"menu/domain/list"
+	"menu/domain/single"
 	"strconv"
 
-	"menu/domain"
-	"menu/domain/usecase"
-
 	"github.com/gofiber/fiber/v2"
+	"menu/domain"
 )
 
 type Controller struct {
-	createMenu *usecase.CreateMenu
-	getMenu    *usecase.GetMenu
-	listMenu   *usecase.ListMenu
+	createMenu *create.CreateMenu
+	getMenu    *single.GetMenu
+	listMenu   *list.ListMenu
 }
 
 func NewMenuController(
-	createMenu *usecase.CreateMenu,
-	getMenu *usecase.GetMenu,
-	listMenu *usecase.ListMenu,
+	createMenu *create.CreateMenu,
+	getMenu *single.GetMenu,
+	listMenu *list.ListMenu,
 ) *Controller {
 	return &Controller{
 		createMenu: createMenu,
@@ -30,15 +31,15 @@ func NewMenuController(
 func (mc *Controller) Add() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		c.Accepts("application/json")
-		var menuRequestDto usecase.CreateMenuRequestDto
+		var menuRequestDto create.CreateMenuRequestDto
 		err := c.BodyParser(&menuRequestDto)
 
 		if err != nil {
-			mc.createMenu.Create(menuRequestDto, NewPresenter[usecase.CreateMenuResponseDto](c))
+			mc.createMenu.Create(menuRequestDto, NewPresenter[create.CreateMenuResponseDto](c))
 			return nil
 		}
 
-		mc.createMenu.Create(menuRequestDto, NewPresenter[usecase.CreateMenuResponseDto](c))
+		mc.createMenu.Create(menuRequestDto, NewPresenter[create.CreateMenuResponseDto](c))
 		return nil
 	}
 }
@@ -47,7 +48,7 @@ func (mc *Controller) Get() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		uuid := c.Params("id")
 		newUuid := domain.NewUuidWithUuid(uuid)
-		mc.getMenu.Retrieve(usecase.GetMenuRequest{Uuid: newUuid.GetValue()}, NewPresenter[usecase.GetMenuResponseDto](c))
+		mc.getMenu.Retrieve(single.GetMenuRequest{Uuid: newUuid.GetValue()}, NewPresenter[single.GetMenuResponseDto](c))
 		return nil
 	}
 }
@@ -68,13 +69,13 @@ func (mc *Controller) List() func(c *fiber.Ctx) error {
 			return err
 		}
 
-		mc.listMenu.ListAllMenu(usecase.ListMenuRequest{
-			MetaData: usecase.MetaData{
+		mc.listMenu.ListAllMenu(list.ListMenuRequest{
+			MetaData: list.MetaData{
 				Page:  pageInt,
 				Limit: limitInt,
 				Sort:  sort,
 			},
-		}, NewPresenter[usecase.ListMenuResponseDto](c))
+		}, NewPresenter[list.ListMenuResponseDto](c))
 		return nil
 	}
 }
